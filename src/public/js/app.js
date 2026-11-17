@@ -65,6 +65,13 @@ function initRealtimeEvents() {
       loadLogsData();
     });
 
+    evtSource.addEventListener('access_code_created', (e) => {
+      console.log('[SSE] access_code_created:', e.data);
+      loadAccessCodes();
+      loadDashboardData();
+      loadLogsData();
+    });
+
     evtSource.onerror = (err) => {
       console.warn('[SSE] EventSource reconnecting...', err);
     };

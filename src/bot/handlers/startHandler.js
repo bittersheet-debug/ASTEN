@@ -68,12 +68,56 @@ const StartHandler = {
 
     // General /start greeting
     const isPrivate = ctx.chat.type === 'private';
+    const isOfficial = ctx.botInfo?.username?.toLowerCase() === 'astenobot' || botId === '9167134826';
     const owner = OwnerModel.findByTelegramUserId(userId);
     const admin = AdminModel.findByTelegramUserId(botId, userId);
 
     let roleText = '🛍️ Pembeli';
     if (owner) roleText = '👑 Owner';
     else if (admin && admin.is_active) roleText = '🛡️ Admin';
+
+    // SPECIAL MASTER MENU FOR OFFICIAL BOT (@Astenobot)
+    if (isOfficial && isPrivate) {
+      let masterMsg = `👑 <b>SELAMAT DATANG DI OFFICIAL ASTEN BOT (@${ctx.botInfo.username})!</b>\n`;
+      masterMsg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+      masterMsg += `Pusat Pengelolaan Lisensi, Kode Akses, dan Penambahan Bot Telegram Toko Otomatis 24 Jam.\n\n`;
+      masterMsg += `Status Akun Anda: <b>${roleText}</b>\n\n`;
+
+      if (owner) {
+        masterMsg += `⭐ <b>Halo Owner ${owner.name}!</b>\n`;
+        masterMsg += `• Lisensi: <b>${owner.license_type}</b>\n`;
+        masterMsg += `• Kuota Bot: <b>${owner.max_bots} Bot</b>\n\n`;
+      }
+
+      masterMsg += `<b>Pilih layanan yang Anda perlukan di bawah ini:</b>`;
+
+      const masterButtons = [
+        [
+          Markup.button.callback('🎫 Buat Kode Akses', 'btn_buat_kode_start'),
+          Markup.button.callback('📜 Daftar Kode Akses', 'btn_daftar_kode')
+        ],
+        [
+          Markup.button.callback('🤖 Daftarkan Bot Baru', 'owner_add_bot_prompt'),
+          Markup.button.callback('⚡ Status Sistem', 'btn_status_sistem')
+        ]
+      ];
+
+      if (owner) {
+        masterButtons.push([
+          Markup.button.callback('🤖 Manajemen Bot Toko Saya', 'btn_my_bots')
+        ]);
+      }
+
+      masterButtons.push([
+        Markup.button.callback('📦 Katalog Produk', 'cmd_price'),
+        Markup.button.callback('📖 Panduan Bot', 'cmd_help_official')
+      ]);
+
+      return ctx.reply(masterMsg, {
+        parse_mode: 'HTML',
+        ...Markup.inlineKeyboard(masterButtons)
+      });
+    }
 
     let greeting = `👋 <b>Selamat datang di ${ctx.botInfo.first_name || 'ASTEN!'}!</b>\n\n`;
     greeting += `Sistem toko Telegram profesional & otomatis bertenaga <b>ASTEN! (ASISTEN TENAGA!)</b>.\n\n`;
@@ -256,6 +300,12 @@ const StartHandler = {
     const admin = AdminModel.findByTelegramUserId(botId, userId);
 
     let helpMsg = `📖 <b>PANDUAN PENGGUNAAN ASTEN!</b>\n\n`;
+    helpMsg += `<b>Perintah Pembuatan Kode Akses (@Astenobot):</b>\n`;
+    helpMsg += `• /buatkode - Buat kode akses baru secara interaktif\n`;
+    helpMsg += `• /buatkode &lt;nama&gt; &lt;durasi&gt; &lt;kuota_bot&gt; - Buat kode langsung 1 baris\n`;
+    helpMsg += `• /listkode - Lihat daftar 10 kode akses terakhir & statusnya\n`;
+    helpMsg += `• /batal - Batalkan proses input yang sedang aktif\n\n`;
+
     helpMsg += `<b>Perintah Publik / Pembeli:</b>\n`;
     helpMsg += `• /start - Memulai bot & menu utama\n`;
     helpMsg += `• /menu - Tampilkan menu interaktif\n`;

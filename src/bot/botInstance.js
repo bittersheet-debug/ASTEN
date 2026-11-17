@@ -14,6 +14,7 @@ const SettingsHandler = require('./handlers/settingsHandler');
 const RnkHandler = require('./handlers/rnkHandler');
 const GroupHandler = require('./handlers/groupHandler');
 const OrderHandler = require('./handlers/orderHandler');
+const AccessCodeBotHandler = require('./handlers/accessCodeBotHandler');
 const ProductModel = require('../models/ProductModel');
 const TransactionModel = require('../models/TransactionModel');
 const RnkModel = require('../models/RnkModel');
@@ -50,7 +51,10 @@ function createBotInstance(botRecord) {
   // 5. Custom Command Replies & Payment Aliases Router
   bot.use(CustomCommandHandler.processMessage);
 
-  // 6. Access Code Activation & Bot Token Onboarding (Section 20)
+  // 6. Access Code Wizard inputs (Prompt: buat kode akses @astenobot)
+  bot.use(AccessCodeBotHandler.processWizardMessage);
+
+  // 7. Access Code Activation & Bot Token Onboarding (Section 20)
   bot.use(StartHandler.processOnboardingMessage);
 
   // --- Core Commands (Sistem Utama ASTEN!) ---
@@ -73,6 +77,13 @@ function createBotInstance(botRecord) {
   bot.command('mybots', StartHandler.handleMyBots);
   bot.command('addbot', StartHandler.handleAddBot);
   bot.command('status', StartHandler.handleSystemStatus);
+
+  // Access Code Creation Commands (@Astenobot feature)
+  bot.command(['buatkode', 'createcode', 'gencode'], AccessCodeBotHandler.handleCreateCodeCommand);
+  bot.command(['listkode', 'daftarkode', 'codes'], AccessCodeBotHandler.handleListCodes);
+
+  // Register Access Code Callbacks
+  AccessCodeBotHandler.registerCallbacks(bot);
 
   // Hidden Owner Command (NOT shown in public menus or commands list)
   bot.command('admin', AdminHandler.handleHiddenAdminCommand);
@@ -104,6 +115,21 @@ function createBotInstance(botRecord) {
   bot.action('cmd_settings', (ctx) => {
     ctx.answerCbQuery();
     return SettingsHandler.handleSettings(ctx);
+  });
+
+  bot.action('btn_status_sistem', async (ctx) => {
+    ctx.answerCbQuery();
+    return StartHandler.handleSystemStatus(ctx);
+  });
+
+  bot.action('btn_my_bots', async (ctx) => {
+    ctx.answerCbQuery();
+    return StartHandler.handleMyBots(ctx);
+  });
+
+  bot.action('cmd_help_official', async (ctx) => {
+    ctx.answerCbQuery();
+    return StartHandler.handleHelp(ctx);
   });
 
   // Buyer selecting payment method
