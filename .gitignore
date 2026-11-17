@@ -1,0 +1,28 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+
+# Vercel
+.vercel/
+
+# Database ephemeral files (keep schema & seeds, ignore local DB binary)
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/*.db-journal
+
+# Uploads
+uploads/qris/*
+!uploads/qris/.gitkeep
+uploads/products/*
+!uploads/products/.gitkeep
+
+# OS
+.DS_Store
+Thumbs.db

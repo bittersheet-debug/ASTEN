@@ -1,0 +1,23 @@
+{
+  "name": "asten-bot-management",
+  "version": "2.5.0",
+  "description": "ASTEN! (ASISTEN TENAGA!) - Telegram Bot Management Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "node tests/verify.js",
+    "clean": "node scripts/clean-db.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.9",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "qrcode": "^1.5.4",
+    "telegraf": "^4.16.3",
+    "uuid": "^11.0.5"
+  }
+}
