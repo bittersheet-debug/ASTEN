@@ -15,6 +15,7 @@ const productRoutes = require('./routes/productRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const rnkRoutes = require('./routes/rnkRoutes');
 const logsRoutes = require('./routes/logsRoutes');
+const webhookRoutes = require('./routes/webhookRoutes');
 const realtimeService = require('../services/realtimeService');
 
 const app = express();
@@ -34,6 +35,7 @@ app.get('/api/events', (req, res) => {
 });
 
 // API Routes
+app.use('/api/webhook', webhookRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/owners', ownerRoutes);
 app.use('/api/licenses', licenseRoutes);

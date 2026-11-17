@@ -1,0 +1,198 @@
+{
+  "owners": [
+    {
+      "id": 1,
+      "name": "ASTEN! Official System",
+      "telegram_username": "Astenobot",
+      "telegram_user_id": "OFFICIAL_SYSTEM",
+      "password_hash": null,
+      "license_type": "PERMANENT",
+      "license_expires_at": null,
+      "max_bots": 999999,
+      "status": "ACTIVE",
+      "created_at": 1794915456154,
+      "updated_at": 1794915456154
+    },
+    {
+      "id": 2,
+      "name": "Odading",
+      "telegram_username": "PENGARHA",
+      "telegram_user_id": "8828045738",
+      "password_hash": null,
+      "license_type": "1_YEAR",
+      "license_expires_at": 1826459123258,
+      "max_bots": 1,
+      "status": "ACTIVE",
+      "created_at": 1794923123258,
+      "updated_at": 1794923123258
+    },
+    {
+      "id": 3,
+      "name": "kim",
+      "telegram_username": "fpengamat",
+      "telegram_user_id": "8616881731",
+      "password_hash": null,
+      "license_type": "1_MONTH",
+      "license_expires_at": 1797516268404,
+      "max_bots": 1,
+      "status": "ACTIVE",
+      "created_at": 1794924268404,
+      "updated_at": 1794924268404
+    }
+  ],
+  "access_codes": [
+    {
+      "id": 1,
+      "code": "ASTEN-4KAY-M79D-8BHT",
+      "owner_name": "kim",
+      "telegram_username": "@komikaal",
+      "telegram_user_id": null,
+      "license_type": "1_MONTH",
+      "duration_days": 30,
+      "max_bots": 1,
+      "status": "USED",
+      "notes": "",
+      "created_at": 1794916077090,
+      "used_at": 1794924268406,
+      "used_by_owner_id": 3
+    },
+    {
+      "id": 2,
+      "code": "ASTEN-UZPG-93PW-9CXZ",
+      "owner_name": "Odading",
+      "telegram_username": null,
+      "telegram_user_id": null,
+      "license_type": "1_YEAR",
+      "duration_days": 365,
+      "max_bots": 1,
+      "status": "USED",
+      "notes": "Digenerate via @Astenobot oleh ID: 8828045738",
+      "created_at": 1794923114226,
+      "used_at": 1794923123260,
+      "used_by_owner_id": 2
+    }
+  ],
+  "bots": [
+    {
+      "id": 1,
+      "bot_id": "9167134826",
+      "owner_id": 1,
+      "owner_telegram_id": "OFFICIAL_SYSTEM",
+      "bot_token_encrypted": "376214a4afd59d039bbcab47:647332576e20ab922e5396fb082f0ce8:bb154e5b4e7ffb60f0d83b2b10aea24fa4f25bd2931f12513762f0cddc53f851a5d412942e39aedfd528a59e87d8",
+      "bot_name": "ASTEN!",
+      "bot_username": "Astenobot",
+      "status": "ACTIVE",
+      "webhook_url": null,
+      "settings_json": "{\"isOfficialMaster\":true,\"greeting\":\"Selamat datang di Official Bot ASTEN! (ASISTEN TENAGA!)\"}",
+      "created_at": 1794915456158,
+      "updated_at": 1794924724637,
+      "is_official": 1,
+      "operational_status": "ONLINE",
+      "api_status": "VALID",
+      "connection_status": "CONNECTED",
+      "last_health_check": 1794925429363,
+      "error_message": null,
+      "restart_count": 0
+    },
+    {
+      "id": 2,
+      "bot_id": "9063786547",
+      "owner_id": 2,
+      "owner_telegram_id": "8828045738",
+      "bot_token_encrypted": "80be871b4562527400254a34:7d2c05235c32f79891ecc31df281cd7e:b5677486f64ebf1dd6481dadfa4f6679a131072905eff35b1fd52765237ee817edb50679cfc7801d4e667f080675",
+      "bot_name": "Pengaturan",
+      "bot_username": "NOTIFKASIASBOT",
+      "status": "ACTIVE",
+      "webhook_url": null,
+      "settings_json": "{\"greeting\":\"Selamat datang di Pengaturan!\",\"currency\":\"IDR\"}",
+      "created_at": 1794923650989,
+      "updated_at": 1794924724823,
+      "is_official": 0,
+      "operational_status": "ONLINE",
+      "api_status": "VALID",
+      "connection_status": "CONNECTED",
+      "last_health_check": 1794925429365,
+      "error_message": null,
+      "restart_count": 0
+    }
+  ],
+  "admins": [],
+  "products": [],
+  "stock_history": [],
+  "payment_configs": [],
+  "custom_commands": [],
+  "rnk_configs": [
+    {
+      "id": 1,
+      "bot_id": "9167134826",
+      "caption": "Terima kasih sudah berbelanja di toko kami! 💗\n\nSebelum melanjutkan aktivitas, jangan lupa isi RNK (Rating and Kritik) terlebih dahulu.\n\nBerikan rating, kesan, dan kritik agar pelayanan kami semakin baik.\n\nSilakan isi melalui link berikut:\n{LINK_RNK}\n\nJika sudah mengisi dan berhasil diverifikasi di Group Comment, akses grup kamu akan otomatis dibuka kembali. Terima kasih!",
+      "link_rnk": "",
+      "group_comment_id": "",
+      "status": "BELUM AKTIF",
+      "updated_at": 1794915640324
+    },
+    {
+      "id": 2,
+      "bot_id": "9063786547",
+      "caption": "Terima kasih sudah berbelanja di toko kami! 💗\n\nSebelum melanjutkan aktivitas, jangan lupa isi RNK (Rating and Kritik) terlebih dahulu.\n\nBerikan rating, kesan, dan kritik agar pelayanan kami semakin baik.\n\nSilakan isi melalui link berikut:\n{LINK_RNK}\n\nJika sudah mengisi dan berhasil diverifikasi di Group Comment, akses grup kamu akan otomatis dibuka kembali. Terima kasih!",
+      "link_rnk": "",
+      "group_comment_id": "",
+      "status": "BELUM AKTIF",
+      "updated_at": 1794923827485
+    }
+  ],
+  "rnk_records": [],
+  "group_settings": [],
+  "activity_logs": [
+    {
+      "id": 1,
+      "bot_id": "9167134826",
+      "owner_id": null,
+      "actor_type": "SYSTEM",
+      "actor_id": "-1004299152133",
+      "action": "GROUP_ACTIVATED",
+      "details": "Bot berhasil diangkat menjadi Administrator di grup Permisih (-1004299152133). Fitur grup aktif.",
+      "created_at": 1794915581852
+    },
+    {
+      "id": 2,
+      "bot_id": null,
+      "owner_id": null,
+      "actor_type": "PORTAL",
+      "actor_id": "ADMIN_PORTAL",
+      "action": "ACCESS_CODE_GENERATED",
+      "details": "Kode akses ASTEN-4KAY-M79D-8BHT dibuat untuk kim (1_MONTH).",
+      "created_at": 1794916077092
+    },
+    {
+      "id": 3,
+      "bot_id": null,
+      "owner_id": null,
+      "actor_type": "TELEGRAM",
+      "actor_id": "8828045738",
+      "action": "ACCESS_CODE_GENERATED",
+      "details": "Kode akses ASTEN-UZPG-93PW-9CXZ dibuat via Telegram untuk Odading (1_YEAR, 1 Bot).",
+      "created_at": 1794923114228
+    },
+    {
+      "id": 4,
+      "bot_id": "9063786547",
+      "owner_id": 2,
+      "actor_type": "OWNER",
+      "actor_id": "8828045738",
+      "action": "BOT_REGISTERED",
+      "details": "Bot @NOTIFKASIASBOT (ID: 9063786547) berhasil didaftarkan dan dijalankan.",
+      "created_at": 1794923650991
+    },
+    {
+      "id": 5,
+      "bot_id": "9063786547",
+      "owner_id": null,
+      "actor_type": "SYSTEM",
+      "actor_id": "-1004230655718",
+      "action": "GROUP_ACTIVATED",
+      "details": "Bot berhasil diangkat menjadi Administrator di grup P (-1004230655718). Fitur grup aktif.",
+      "created_at": 1794923812623
+    }
+  ]
+}

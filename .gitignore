@@ -11,8 +11,8 @@ yarn-error.log*
 # Vercel
 .vercel/
 
-# Database ephemeral files (keep schema & seeds, ignore local DB binary)
-data/*.db
+# Database ephemeral files (keep schema, seeds & master asten.db, ignore test DBs & WAL)
+data/test_*.db
 data/*.db-wal
 data/*.db-shm
 data/*.db-journal
