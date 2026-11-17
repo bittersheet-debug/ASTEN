@@ -33,8 +33,9 @@ async function bootstrap() {
     // 5. Start HTTP Server for Web Portal & REST API
     const server = http.createServer(app);
     server.listen(config.PORT, config.HOST, () => {
-      console.log(`[Portal] PORTAL PEMILIK BOT ASTEN! running at: http://localhost:${config.PORT}`);
-      console.log(`[API] REST API endpoints available at: http://localhost:${config.PORT}/api`);
+      console.log(`[Portal] PORTAL PEMILIK BOT ASTEN! running at: ${config.BASE_URL}`);
+      console.log(`[API] REST API endpoints available at: ${config.BASE_URL}/api`);
+      console.log(`[Local Port] Listening locally on http://${config.HOST}:${config.PORT}`);
       console.log(`[Ready] ASTEN! System is FULLY OPERATIONAL and listening.`);
       console.log('====================================================\n');
     });

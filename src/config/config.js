@@ -13,7 +13,7 @@ module.exports = {
   NODE_ENV: process.env.NODE_ENV || 'production',
   
   // Base URLs
-  BASE_URL: process.env.BASE_URL || 'http://localhost:3000',
+  BASE_URL: process.env.BASE_URL || 'https://astendebugweb.vercel.app',
   
   // Security
   MASTER_KEY: process.env.MASTER_KEY || 'asten-super-secret-master-key-32b!', // 32 chars for AES

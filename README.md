@@ -142,10 +142,9 @@ Website portal web bertenaga modern Glassmorphism & Tailwind CSS:
    npm start
    ```
 
-4. Buka browser dan akses **Portal Pemilik Bot ASTEN!**:
-   ```
-   http://localhost:3000
-   ```
+4. Akses **Portal Pemilik Bot ASTEN!**:
+   - **URL Publik Vercel:** `https://astendebugweb.vercel.app`
+   - **Lokal (Dev):** `http://localhost:3000`
 
 ---
 
