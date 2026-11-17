@@ -12,6 +12,7 @@ const RnkModel = require('../../models/RnkModel');
 const LicenseModel = require('../../models/LicenseModel');
 const realtimeService = require('../../services/realtimeService');
 const BotModel = require('../../models/BotModel');
+const LogModel = require('../../models/LogModel');
 
 // In-memory set of owners awaiting BotFather token
 const awaitingBotTokenOwners = new Set(); // Set<telegramUserId>
@@ -153,6 +154,15 @@ const StartHandler = {
     }
 
     awaitingBotTokenOwners.add(userId);
+
+    // Record Activity Log
+    LogModel.log({
+      ownerId: result.owner.id,
+      actorType: 'TELEGRAM',
+      actorId: String(userId),
+      action: 'ACCESS_CODE_ACTIVATED',
+      details: `Kode akses ${code} berhasil diaktifkan via Telegram oleh @${username || userId} (${result.owner.name}).`
+    });
 
     // Broadcast to real-time website dashboard!
     realtimeService.broadcast('owner_activated', {

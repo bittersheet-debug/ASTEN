@@ -54,6 +54,15 @@ router.patch('/:id/status', (req, res) => {
   try {
     const { status } = req.body;
     OwnerModel.updateStatus(req.params.id, status);
+
+    LogModel.log({
+      ownerId: req.params.id,
+      actorType: 'PORTAL',
+      actorId: 'ADMIN_PORTAL',
+      action: 'OWNER_STATUS_UPDATED',
+      details: `Status Owner ID ${req.params.id} diubah menjadi ${status}.`
+    });
+
     res.json({ success: true, message: `Status Owner diperbarui menjadi ${status}.` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -66,6 +75,15 @@ router.post('/:id/extend', (req, res) => {
     const { days } = req.body;
     const additionalDays = parseInt(days, 10) || 30;
     const updated = OwnerModel.extendLicense(req.params.id, additionalDays);
+
+    LogModel.log({
+      ownerId: req.params.id,
+      actorType: 'PORTAL',
+      actorId: 'ADMIN_PORTAL',
+      action: 'OWNER_LICENSE_EXTENDED',
+      details: `Lisensi Owner ID ${req.params.id} berhasil diperpanjang ${additionalDays} hari.`
+    });
+
     res.json({ success: true, message: `Lisensi Owner berhasil diperpanjang ${additionalDays} hari.`, data: updated });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -78,6 +96,15 @@ router.post('/:id/reset-password', async (req, res) => {
     const { newPassword } = req.body;
     if (!newPassword) return res.status(400).json({ success: false, message: 'Password baru wajib diisi.' });
     await OwnerModel.updatePassword(req.params.id, newPassword);
+
+    LogModel.log({
+      ownerId: req.params.id,
+      actorType: 'PORTAL',
+      actorId: 'ADMIN_PORTAL',
+      action: 'OWNER_PASSWORD_RESET',
+      details: `Password Owner ID ${req.params.id} berhasil direset.`
+    });
+
     res.json({ success: true, message: 'Password Owner berhasil direset.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -88,6 +115,15 @@ router.post('/:id/reset-password', async (req, res) => {
 router.delete('/:id', (req, res) => {
   try {
     OwnerModel.delete(req.params.id);
+
+    LogModel.log({
+      ownerId: req.params.id,
+      actorType: 'PORTAL',
+      actorId: 'ADMIN_PORTAL',
+      action: 'OWNER_DELETED',
+      details: `Owner ID ${req.params.id} berhasil dihapus dari sistem ASTEN!.`
+    });
+
     res.json({ success: true, message: 'Owner berhasil dihapus.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

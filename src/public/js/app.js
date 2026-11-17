@@ -12,11 +12,7 @@ let cachedCodes = [];
 
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
-  loadDashboardData();
-  loadOwners();
-  loadAccessCodes();
-  loadBots();
-  loadLogsData();
+  refreshAllData();
   initRealtimeEvents();
 
   // Polling fallback every 15 seconds for dashboard metrics
@@ -26,6 +22,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }, 15000);
 });
+
+// Global Comprehensive Refresh for all modules & history
+async function refreshAllData(btnElement) {
+  let icon = null;
+  if (btnElement) {
+    icon = btnElement.querySelector('i');
+  }
+  if (!icon) {
+    icon = document.getElementById('global-refresh-icon');
+  }
+
+  if (icon) icon.classList.add('fa-spin');
+
+  try {
+    await Promise.allSettled([
+      loadDashboardData(),
+      loadOwners(),
+      loadAccessCodes(),
+      loadBots(),
+      loadLogsData()
+    ]);
+  } catch (err) {
+    console.warn('[Refresh] Error refreshing portal data:', err);
+  } finally {
+    if (icon) {
+      setTimeout(() => {
+        icon.classList.remove('fa-spin');
+      }, 500);
+    }
+  }
+}
 
 // Real-time Server-Sent Events (SSE) Listener (Section 5 & 7)
 function initRealtimeEvents() {
@@ -40,36 +67,27 @@ function initRealtimeEvents() {
 
     evtSource.addEventListener('bot_registered', (e) => {
       console.log('[SSE] bot_registered:', e.data);
-      loadBots();
-      loadDashboardData();
-      loadLogsData();
+      refreshAllData();
     });
 
     evtSource.addEventListener('bot_status_changed', (e) => {
       console.log('[SSE] bot_status_changed:', e.data);
-      loadBots();
-      loadDashboardData();
+      refreshAllData();
     });
 
     evtSource.addEventListener('bot_updated', (e) => {
       console.log('[SSE] bot_updated:', e.data);
-      loadBots();
-      loadDashboardData();
+      refreshAllData();
     });
 
     evtSource.addEventListener('owner_activated', (e) => {
       console.log('[SSE] owner_activated:', e.data);
-      loadOwners();
-      loadAccessCodes();
-      loadDashboardData();
-      loadLogsData();
+      refreshAllData();
     });
 
     evtSource.addEventListener('access_code_created', (e) => {
       console.log('[SSE] access_code_created:', e.data);
-      loadAccessCodes();
-      loadDashboardData();
-      loadLogsData();
+      refreshAllData();
     });
 
     evtSource.onerror = (err) => {
@@ -669,6 +687,7 @@ async function handleCreateOwner(e) {
     if (json.success) {
       alert('Owner baru berhasil ditambahkan!');
       document.getElementById('form-add-owner').reset();
+      await refreshAllData();
       switchTab('owners');
     } else {
       alert('Gagal: ' + json.message);
@@ -723,7 +742,7 @@ async function handleGenerateAccessCode(e) {
 
       document.getElementById('form-create-code').reset();
       document.getElementById('modal-code-success').classList.remove('hidden');
-      loadAccessCodes();
+      await refreshAllData();
     } else {
       alert('Gagal: ' + json.message);
     }
@@ -808,8 +827,11 @@ async function handleRegisterBotSubmit(e) {
     if (json.success) {
       alert(json.message);
       closeModal('modal-register-bot');
-      loadBots();
-      loadDashboardData();
+      document.getElementById('form-register-bot')?.reset();
+      const feedback = document.getElementById('token-test-feedback');
+      if (feedback) feedback.classList.add('hidden');
+      await refreshAllData();
+      switchTab('bot-list');
     } else {
       alert('Gagal: ' + json.message);
     }
@@ -827,8 +849,7 @@ async function toggleBotRun(botId, isCurrentlyRunning) {
     const res = await fetch(`${API_BASE}/bots/${botId}/${endpoint}`, { method: 'POST' });
     const json = await res.json();
     if (json.success) {
-      loadBots();
-      loadDashboardData();
+      await refreshAllData();
     } else {
       alert(json.message);
     }
@@ -843,8 +864,7 @@ async function restartBot(botId) {
     const res = await fetch(`${API_BASE}/bots/${botId}/restart`, { method: 'POST' });
     const json = await res.json();
     alert(json.message);
-    loadBots();
-    loadDashboardData();
+    await refreshAllData();
   } catch (err) {
     alert('Gagal me-restart bot.');
   }
@@ -857,8 +877,7 @@ async function deleteBot(botId) {
     const res = await fetch(`${API_BASE}/bots/${botId}`, { method: 'DELETE' });
     const json = await res.json();
     alert(json.message);
-    loadBots();
-    loadDashboardData();
+    await refreshAllData();
   } catch (err) {
     alert('Gagal menghapus bot.');
   }
@@ -873,7 +892,7 @@ async function toggleOwnerStatus(ownerId, newStatus) {
       body: JSON.stringify({ status: newStatus })
     });
     const json = await res.json();
-    if (json.success) loadOwners();
+    if (json.success) await refreshAllData();
   } catch (err) {
     alert('Gagal mengubah status owner.');
   }
@@ -885,7 +904,7 @@ async function deleteOwner(ownerId) {
   try {
     const res = await fetch(`${API_BASE}/owners/${ownerId}`, { method: 'DELETE' });
     const json = await res.json();
-    if (json.success) loadOwners();
+    if (json.success) await refreshAllData();
   } catch (err) {
     alert('Gagal menghapus owner.');
   }
@@ -911,7 +930,7 @@ async function submitExtendLicense() {
     if (json.success) {
       alert(json.message);
       closeModal('modal-extend-license');
-      loadOwners();
+      await refreshAllData();
     } else {
       alert(json.message);
     }
