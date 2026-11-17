@@ -75,7 +75,7 @@
 
         <button onclick="switchTab('bot-list')" id="nav-bot-list" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
           <i class="fa-brands fa-telegram w-5 text-center text-sky-400"></i>
-          <span>5. Daftar Bot ASTEN!</span>
+          <span>5. Manajemen Bot</span>
         </button>
 
         <button onclick="switchTab('owners')" id="nav-owners" class="nav-item w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-slate-800/50 transition">
@@ -154,24 +154,72 @@
           </div>
         </div>
 
-        <!-- Metric Cards Grid (10 Metrik sesuai Prompt Bagian 19.A) -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
-          <div class="glass-card p-4">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>TOTAL OWNER</span>
-              <i class="fa-solid fa-users text-purple-400"></i>
-            </div>
-            <div class="text-2xl font-bold text-white mt-2" id="metric-total-owners">0</div>
-            <div class="text-xs text-purple-400 mt-1">Terdaftar di sistem</div>
+        <!-- System Live Monitoring Panel (Section 8) -->
+        <div class="glass-card p-5 border border-indigo-500/30">
+          <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2.5">
+            <h3 class="font-bold text-sm text-white flex items-center space-x-2">
+              <i class="fa-solid fa-server text-indigo-400"></i>
+              <span>Live System & Ecosystem Monitoring (24 Jam Non-Stop)</span>
+            </h3>
+            <span class="text-[11px] text-emerald-400 font-mono flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 pulse-green"></span>
+              <span>Watchdog Auto-Recovery Aktif</span>
+            </span>
           </div>
 
+          <div class="grid grid-cols-2 md:grid-cols-6 gap-3 text-xs">
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400 text-[11px] mb-1">@Astenobot Official</div>
+              <div class="font-bold text-emerald-400 flex items-center space-x-1">
+                <span>🟢 ONLINE</span>
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Master Gateway 24h</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400 text-[11px] mb-1">Website Portal</div>
+              <div class="font-bold text-emerald-400">🟢 ONLINE</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">REST API + SSE Stream</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400 text-[11px] mb-1">Database Terpusat</div>
+              <div class="font-bold text-emerald-400">🟢 SQLITE WAL</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">ACID Synchronous</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400 text-[11px] mb-1">Telegram Bot API</div>
+              <div class="font-bold text-emerald-400">🟢 CONNECTED</div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Official HTTPS Endpoint</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400 text-[11px] mb-1">Server Process</div>
+              <div class="font-bold text-sky-400" id="monitor-server-uptime">Uptime: 0m</div>
+              <div class="text-[10px] text-slate-500 mt-0.5" id="monitor-server-memory">Mem: -- MB</div>
+            </div>
+
+            <div class="p-3 rounded-xl bg-slate-900/80 border border-slate-800">
+              <div class="text-slate-400 text-[11px] mb-1">Sinkronisasi Realtime</div>
+              <div class="font-bold text-purple-400 flex items-center space-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-purple-400 pulse-green"></span>
+                <span>SSE LIVE</span>
+              </div>
+              <div class="text-[10px] text-slate-500 mt-0.5">Auto-Push Update</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Metric Cards Grid (Sesuai Prompt Bagian 8 & 19.A) -->
+        <div class="grid grid-cols-2 md:grid-cols-6 gap-4">
           <div class="glass-card p-4">
             <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
               <span>TOTAL BOT</span>
               <i class="fa-brands fa-telegram text-sky-400"></i>
             </div>
             <div class="text-2xl font-bold text-white mt-2" id="metric-total-bots">0</div>
-            <div class="text-xs text-slate-400 mt-1">Instance terpasang</div>
+            <div class="text-xs text-slate-400 mt-1">Bot toko terdaftar</div>
           </div>
 
           <div class="glass-card p-4">
@@ -180,70 +228,43 @@
               <i class="fa-solid fa-circle-check text-emerald-400"></i>
             </div>
             <div class="text-2xl font-bold text-emerald-400 mt-2" id="metric-active-bots">0</div>
-            <div class="text-xs text-emerald-500/80 mt-1">Running polling/webhook</div>
+            <div class="text-xs text-emerald-500/80 mt-1">🟢 Status Online</div>
           </div>
 
           <div class="glass-card p-4">
             <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>BOT NONAKTIF</span>
-              <i class="fa-solid fa-circle-pause text-amber-400"></i>
+              <span>BOT OFFLINE</span>
+              <i class="fa-solid fa-circle-stop text-rose-400"></i>
             </div>
-            <div class="text-2xl font-bold text-amber-400 mt-2" id="metric-inactive-bots">0</div>
-            <div class="text-xs text-amber-500/80 mt-1">Stopped / Error</div>
+            <div class="text-2xl font-bold text-rose-400 mt-2" id="metric-offline-bots">0</div>
+            <div class="text-xs text-rose-500/80 mt-1">🔴 Status Offline</div>
           </div>
 
           <div class="glass-card p-4">
             <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>LISENSI AKTIF</span>
-              <i class="fa-solid fa-shield-halved text-indigo-400"></i>
+              <span>BOT ERROR</span>
+              <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
             </div>
-            <div class="text-2xl font-bold text-indigo-400 mt-2" id="metric-active-licenses">0</div>
-            <div class="text-xs text-indigo-400 mt-1">Owner aktif</div>
+            <div class="text-2xl font-bold text-amber-400 mt-2" id="metric-error-bots">0</div>
+            <div class="text-xs text-amber-500/80 mt-1">🟠 Butuh perhatian</div>
           </div>
 
           <div class="glass-card p-4">
             <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>LISENSI KEDALUWARSA</span>
-              <i class="fa-solid fa-triangle-exclamation text-rose-400"></i>
+              <span>TOTAL API VALID</span>
+              <i class="fa-solid fa-key text-teal-400"></i>
             </div>
-            <div class="text-2xl font-bold text-rose-400 mt-2" id="metric-expired-licenses">0</div>
-            <div class="text-xs text-rose-400 mt-1">Perlu perpanjangan</div>
+            <div class="text-2xl font-bold text-teal-400 mt-2" id="metric-valid-api">0</div>
+            <div class="text-xs text-teal-500/80 mt-1">Token BotFather valid</div>
           </div>
 
           <div class="glass-card p-4">
             <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>LISENSI PERMANEN</span>
-              <i class="fa-solid fa-infinity text-teal-400"></i>
+              <span>PENGGUNA / OWNER</span>
+              <i class="fa-solid fa-users text-purple-400"></i>
             </div>
-            <div class="text-2xl font-bold text-teal-400 mt-2" id="metric-permanent-licenses">0</div>
-            <div class="text-xs text-teal-400 mt-1">Tanpa batas waktu</div>
-          </div>
-
-          <div class="glass-card p-4">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>TOTAL KODE AKSES</span>
-              <i class="fa-solid fa-ticket text-blue-400"></i>
-            </div>
-            <div class="text-2xl font-bold text-blue-400 mt-2" id="metric-total-codes">0</div>
-            <div class="text-xs text-blue-400 mt-1">Dibuat di portal</div>
-          </div>
-
-          <div class="glass-card p-4">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>KODE BELUM DIGUNAKAN</span>
-              <i class="fa-solid fa-envelope-open text-yellow-400"></i>
-            </div>
-            <div class="text-2xl font-bold text-yellow-400 mt-2" id="metric-unused-codes">0</div>
-            <div class="text-xs text-yellow-500/80 mt-1">Status UNUSED</div>
-          </div>
-
-          <div class="glass-card p-4">
-            <div class="flex items-center justify-between text-slate-400 text-xs font-semibold">
-              <span>KODE TERPAKAI</span>
-              <i class="fa-solid fa-check-double text-purple-400"></i>
-            </div>
-            <div class="text-2xl font-bold text-purple-400 mt-2" id="metric-used-codes">0</div>
-            <div class="text-xs text-purple-400 mt-1">Status USED</div>
+            <div class="text-2xl font-bold text-purple-400 mt-2" id="metric-total-owners">0</div>
+            <div class="text-xs text-purple-400 mt-1">Owner terdaftar</div>
           </div>
         </div>
 
@@ -458,17 +479,50 @@
         </div>
       </section>
 
-      <!-- ================= 5. DAFTAR BOT ASTEN! ================= -->
+      <!-- ================= 5. MANAJEMEN BOT (Section 6) ================= -->
       <section id="tab-bot-list" class="hidden space-y-6">
-        <div class="flex items-center justify-between">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <h2 class="text-2xl font-bold text-white">Daftar Bot Telegram ASTEN!</h2>
-            <p class="text-sm text-slate-400">Semua bot yang terdaftar menggunakan API Token BotFather, berjalan secara independen dan simultan.</p>
+            <h2 class="text-2xl font-bold text-white flex items-center space-x-2">
+              <span>Manajemen Bot (@Astenobot & Bot Tambahan)</span>
+              <span class="bg-purple-900/50 text-purple-300 text-xs px-2.5 py-0.5 rounded-full border border-purple-500/30">Sinkronisasi 2-Arah</span>
+            </h2>
+            <p class="text-sm text-slate-400">Monitoring status operasional (Online, Offline, Connecting, Restarting, Error, Disabled), koneksi API, dan kontrol 24 jam.</p>
           </div>
-          <button onclick="openRegisterBotModal()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs px-3.5 py-2 rounded-lg font-semibold flex items-center space-x-1.5">
+          <button onclick="openRegisterBotModal()" class="bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white text-xs px-4 py-2.5 rounded-xl font-bold shadow-lg shadow-sky-600/30 flex items-center space-x-1.5 shrink-0 transition">
             <i class="fa-brands fa-telegram"></i>
             <span>Daftar Bot Baru</span>
           </button>
+        </div>
+
+        <!-- Filter & Search Toolbar (Section 6) -->
+        <div class="glass-card p-4 flex flex-col md:flex-row items-center justify-between gap-3">
+          <div class="flex items-center space-x-2 w-full md:w-80">
+            <div class="relative w-full">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              </span>
+              <input type="text" id="bot-search-input" oninput="filterBotsTable()" placeholder="Cari nama atau @username bot..." class="w-full pl-9 pr-3.5 py-2 rounded-xl glass-input text-xs">
+            </div>
+          </div>
+
+          <div class="flex items-center space-x-3 w-full md:w-auto">
+            <span class="text-xs text-slate-400 whitespace-nowrap">Filter Status:</span>
+            <select id="bot-status-filter" onchange="filterBotsTable()" class="px-3 py-2 rounded-xl glass-input text-xs font-semibold">
+              <option value="ALL">Semua Status</option>
+              <option value="ONLINE">🟢 ONLINE</option>
+              <option value="OFFLINE">🔴 OFFLINE</option>
+              <option value="CONNECTING">🟡 CONNECTING</option>
+              <option value="RESTARTING">🔵 RESTARTING</option>
+              <option value="ERROR">🟠 ERROR</option>
+              <option value="DISABLED">⚪ DISABLED</option>
+            </select>
+
+            <button onclick="loadBots()" class="px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold border border-slate-700 transition flex items-center space-x-1">
+              <i class="fa-solid fa-rotate-right"></i>
+              <span>Refresh</span>
+            </button>
+          </div>
         </div>
 
         <div class="glass-card overflow-hidden">
@@ -477,16 +531,18 @@
               <thead class="bg-slate-900/80 text-xs uppercase text-slate-400 font-semibold border-b border-slate-800">
                 <tr>
                   <th class="px-5 py-3.5">Bot Info</th>
-                  <th class="px-5 py-3.5">Bot ID</th>
-                  <th class="px-5 py-3.5">Owner Terikat</th>
-                  <th class="px-5 py-3.5">Lisensi Owner</th>
-                  <th class="px-5 py-3.5">Status Engine</th>
+                  <th class="px-5 py-3.5">ID Telegram</th>
+                  <th class="px-5 py-3.5">Pemilik Bot</th>
+                  <th class="px-5 py-3.5">Ditambahkan</th>
+                  <th class="px-5 py-3.5">Status API</th>
+                  <th class="px-5 py-3.5">Koneksi</th>
+                  <th class="px-5 py-3.5">Status Operasional</th>
                   <th class="px-5 py-3.5 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody id="bot-table-body" class="divide-y divide-slate-800/60">
+              <tbody id="bot-table-body" class="divide-y divide-slate-800/60 text-xs">
                 <tr>
-                  <td colspan="6" class="text-center py-8 text-slate-500 italic">Memuat daftar bot...</td>
+                  <td colspan="8" class="text-center py-8 text-slate-500 italic">Memuat data bot...</td>
                 </tr>
               </tbody>
             </table>
@@ -802,6 +858,96 @@
       <div class="flex space-x-2">
         <button onclick="closeModal('modal-extend-license')" class="w-1/2 bg-slate-800 text-slate-300 py-2 rounded-xl text-xs font-semibold">Batal</button>
         <button onclick="submitExtendLicense()" class="w-1/2 bg-purple-600 hover:bg-purple-500 text-white py-2 rounded-xl text-xs font-semibold">Perpanjang</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Bot Detail Modal (Section 6) -->
+  <div id="modal-bot-detail" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="glass-card max-w-2xl w-full p-6 space-y-5 border border-purple-500/40 shadow-2xl overflow-y-auto max-h-[90vh]">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div class="flex items-center space-x-3">
+          <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white text-xl shadow-lg shadow-purple-500/20">
+            <i class="fa-brands fa-telegram"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-lg text-white flex items-center space-x-2">
+              <span id="detail-bot-name">Detail Bot</span>
+              <span id="detail-bot-official-badge" class="hidden text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded-full font-bold">OFFICIAL</span>
+            </h3>
+            <p id="detail-bot-username" class="text-xs text-sky-400 font-mono">@username</p>
+          </div>
+        </div>
+        <button onclick="closeModal('modal-bot-detail')" class="text-slate-400 hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Quick Metrics Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+        <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
+          <div class="text-slate-400 mb-1">Status Operasional</div>
+          <div id="detail-operational-status" class="font-bold">ONLINE</div>
+        </div>
+        <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
+          <div class="text-slate-400 mb-1">Status API Token</div>
+          <div id="detail-api-status" class="font-bold text-emerald-400">VALID</div>
+        </div>
+        <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
+          <div class="text-slate-400 mb-1">Koneksi Polling</div>
+          <div id="detail-connection-status" class="font-bold text-emerald-400">CONNECTED</div>
+        </div>
+        <div class="bg-slate-900/70 p-3 rounded-xl border border-slate-800">
+          <div class="text-slate-400 mb-1">Aktivasi</div>
+          <div id="detail-activation-status" class="font-bold text-emerald-400">AKTIF</div>
+        </div>
+      </div>
+
+      <!-- Detail Info List -->
+      <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-800/80 space-y-2.5 text-xs">
+        <div class="flex justify-between py-1 border-b border-slate-800/60">
+          <span class="text-slate-400">Telegram Bot ID:</span>
+          <span id="detail-bot-id" class="font-mono text-slate-200 font-semibold">-</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-800/60">
+          <span class="text-slate-400">Pemilik (Owner):</span>
+          <span id="detail-owner-name" class="text-purple-300 font-semibold">-</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-800/60">
+          <span class="text-slate-400">Tanggal & Waktu Ditambahkan:</span>
+          <span id="detail-created-at" class="text-slate-300">-</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-800/60">
+          <span class="text-slate-400">Health Check Terakhir (Watchdog):</span>
+          <span id="detail-last-health" class="text-slate-300">-</span>
+        </div>
+        <div class="flex justify-between py-1 border-b border-slate-800/60">
+          <span class="text-slate-400">Jumlah Auto-Restart:</span>
+          <span id="detail-restart-count" class="text-slate-300 font-mono">0</span>
+        </div>
+        <div class="flex justify-between py-1">
+          <span class="text-slate-400">Keamanan Token:</span>
+          <span class="text-emerald-400 font-semibold">Terenkripsi AES-256-GCM (Aman & Privat)</span>
+        </div>
+      </div>
+
+      <!-- Error box if present -->
+      <div id="detail-error-box" class="hidden bg-rose-950/40 border border-rose-500/40 p-3 rounded-xl text-xs text-rose-300">
+        <div class="font-semibold mb-1 flex items-center space-x-1">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          <span>Pesan Error Terakhir:</span>
+        </div>
+        <p id="detail-error-message" class="font-mono text-[11px] break-words"></p>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="pt-2 border-t border-slate-800 flex items-center justify-between">
+        <div id="detail-action-controls" class="flex items-center space-x-2">
+          <!-- Dynamically populated buttons -->
+        </div>
+        <button onclick="closeModal('modal-bot-detail')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2 rounded-xl text-xs font-semibold transition">
+          Tutup
+        </button>
       </div>
     </div>
   </div>

@@ -36,15 +36,26 @@ router.get('/metrics', (req, res) => {
       success: true,
       stats: {
         totalOwners: owners.length,
-        totalBots: botStats.total,
+        totalBots: botStats.allBots || botStats.total,
         activeBots: botStats.active,
         inactiveBots: botStats.inactive,
+        onlineBots: botStats.online,
+        offlineBots: botStats.offline,
+        errorBots: botStats.error,
+        validApiBots: botStats.validApi,
+        officialBotCount: botStats.officialCount,
         activeLicenses,
         expiredLicenses,
         permanentLicenses,
         totalAccessCodes: licenseStats.total,
         unusedAccessCodes: licenseStats.unused,
         usedAccessCodes: licenseStats.used
+      },
+      system: {
+        uptimeSeconds: Math.floor(process.uptime()),
+        memoryRssMb: Math.round(process.memoryUsage().rss / 1024 / 1024),
+        nodeVersion: process.version,
+        platform: process.platform
       },
       recentActivity: recentLogs
     });

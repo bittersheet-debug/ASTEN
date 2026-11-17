@@ -184,8 +184,55 @@ const BotModel = {
   },
 
   updateStatus: (botId, status) => {
-    return db.prepare('UPDATE bots SET status = ?, updated_at = ? WHERE bot_id = ?')
-      .run(status, Date.now(), String(botId));
+    const operational = status === 'ACTIVE' ? 'ONLINE' : (status === 'INACTIVE' ? 'DISABLED' : 'OFFLINE');
+    return db.prepare(`
+      UPDATE bots SET 
+        status = ?, 
+        operational_status = ?, 
+        connection_status = ?,
+        updated_at = ? 
+      WHERE bot_id = ?
+    `).run(status, operational, operational === 'ONLINE' ? 'CONNECTED' : 'DISCONNECTED', Date.now(), String(botId));
+  },
+
+  updateOperationalStatus: (botId, operationalStatus, errorMessage = null) => {
+    const conn = operationalStatus === 'ONLINE' ? 'CONNECTED' : (operationalStatus === 'CONNECTING' ? 'CONNECTING' : 'DISCONNECTED');
+    return db.prepare(`
+      UPDATE bots SET
+        operational_status = ?,
+        error_message = ?,
+        connection_status = ?,
+        last_health_check = ?,
+        updated_at = ?
+      WHERE bot_id = ?
+    `).run(
+      operationalStatus,
+      errorMessage,
+      conn,
+      Date.now(),
+      Date.now(),
+      String(botId)
+    );
+  },
+
+  updateHealthCheckTimestamp: (botId) => {
+    return db.prepare(`
+      UPDATE bots SET
+        last_health_check = ?,
+        operational_status = 'ONLINE',
+        connection_status = 'CONNECTED'
+      WHERE bot_id = ?
+    `).run(Date.now(), String(botId));
+  },
+
+  incrementRestartCount: (botId) => {
+    return db.prepare('UPDATE bots SET restart_count = restart_count + 1 WHERE bot_id = ?')
+      .run(String(botId));
+  },
+
+  resetRestartCount: (botId) => {
+    return db.prepare('UPDATE bots SET restart_count = 0 WHERE bot_id = ?')
+      .run(String(botId));
   },
 
   updateSettings: (botId, settings) => {
@@ -203,13 +250,27 @@ const BotModel = {
   },
 
   getStats: () => {
-    // Exclude official bot from regular tenant bot count ("ga kehitung"!)
+    // Exclude official bot from tenant quota counting, but provide overall stats
     const total = db.prepare("SELECT COUNT(*) as count FROM bots WHERE is_official = 0 OR is_official IS NULL").get().count;
+    const allBots = db.prepare("SELECT COUNT(*) as count FROM bots").get().count;
     const active = db.prepare("SELECT COUNT(*) as count FROM bots WHERE status = 'ACTIVE' AND (is_official = 0 OR is_official IS NULL)").get().count;
     const inactive = db.prepare("SELECT COUNT(*) as count FROM bots WHERE status = 'INACTIVE' AND (is_official = 0 OR is_official IS NULL)").get().count;
-    const expired = db.prepare("SELECT COUNT(*) as count FROM bots WHERE status = 'EXPIRED' AND (is_official = 0 OR is_official IS NULL)").get().count;
+    const online = db.prepare("SELECT COUNT(*) as count FROM bots WHERE operational_status = 'ONLINE'").get().count;
+    const offline = db.prepare("SELECT COUNT(*) as count FROM bots WHERE operational_status = 'OFFLINE'").get().count;
+    const error = db.prepare("SELECT COUNT(*) as count FROM bots WHERE operational_status = 'ERROR'").get().count;
+    const validApi = db.prepare("SELECT COUNT(*) as count FROM bots WHERE api_status = 'VALID'").get().count;
     const officialCount = db.prepare("SELECT COUNT(*) as count FROM bots WHERE is_official = 1").get().count;
-    return { total, active, inactive, expired, officialCount };
+    return {
+      total,
+      allBots,
+      active,
+      inactive,
+      online,
+      offline,
+      error,
+      validApi,
+      officialCount
+    };
   }
 };
 

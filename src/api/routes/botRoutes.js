@@ -7,14 +7,19 @@ const router = express.Router();
 const BotModel = require('../../models/BotModel');
 const botManager = require('../../bot/botManager');
 const TelegramService = require('../../services/telegramService');
+const realtimeService = require('../../services/realtimeService');
 
-// Get all bots
+// Get all bots (Tokens are completely stripped for security)
 router.get('/', (req, res) => {
   try {
-    const bots = BotModel.getAll();
+    const rawBots = BotModel.getAll();
+    const safeBots = rawBots.map(b => {
+      const { bot_token, bot_token_encrypted, ...safe } = b;
+      return safe;
+    });
     const stats = BotModel.getStats();
     const live = botManager.getLiveStatus();
-    res.json({ success: true, data: bots, stats, live });
+    res.json({ success: true, data: safeBots, stats, live });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
   }
@@ -51,6 +56,7 @@ router.post('/register', async (req, res) => {
       return res.status(400).json(result);
     }
 
+    realtimeService.broadcast('bot_updated', { action: 'REGISTER', bot: result.bot });
     res.json(result);
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -64,6 +70,7 @@ router.post('/:botId/start', async (req, res) => {
     if (!botRecord) return res.status(404).json({ success: false, message: 'Bot tidak ditemukan.' });
 
     await botManager.startBot(botRecord);
+    realtimeService.broadcast('bot_updated', { action: 'START', botId: req.params.botId });
     res.json({ success: true, message: `Bot @${botRecord.bot_username} berhasil dijalankan.` });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -75,6 +82,7 @@ router.post('/:botId/stop', async (req, res) => {
   try {
     await botManager.stopBot(req.params.botId);
     BotModel.updateStatus(req.params.botId, 'INACTIVE');
+    realtimeService.broadcast('bot_updated', { action: 'STOP', botId: req.params.botId });
     res.json({ success: true, message: 'Bot berhasil dihentikan.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -85,6 +93,7 @@ router.post('/:botId/stop', async (req, res) => {
 router.post('/:botId/restart', async (req, res) => {
   try {
     await botManager.restartBot(req.params.botId);
+    realtimeService.broadcast('bot_updated', { action: 'RESTART', botId: req.params.botId });
     res.json({ success: true, message: 'Bot berhasil direstart.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
@@ -96,6 +105,7 @@ router.delete('/:botId', async (req, res) => {
   try {
     await botManager.stopBot(req.params.botId);
     BotModel.delete(req.params.botId);
+    realtimeService.broadcast('bot_updated', { action: 'DELETE', botId: req.params.botId });
     res.json({ success: true, message: 'Bot berhasil dihapus.' });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });

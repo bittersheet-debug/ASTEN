@@ -7,6 +7,7 @@ const config = require('./src/config/config');
 const db = require('./src/database/db');
 const botManager = require('./src/bot/botManager');
 const expirationWorker = require('./src/services/expirationWorker');
+const watchdogService = require('./src/services/watchdogService');
 const app = require('./src/api/server');
 
 async function bootstrap() {
@@ -23,10 +24,13 @@ async function bootstrap() {
     // 2. Start Background Expiration Worker (30m payment countdown & license checks)
     expirationWorker.start();
 
-    // 3. Start all registered active bots
+    // 3. Start Watchdog Process Manager (Auto-Recovery & Health Check)
+    watchdogService.start();
+
+    // 4. Start all registered active bots
     await botManager.startAllActiveBots();
 
-    // 4. Start HTTP Server for Web Portal & REST API
+    // 5. Start HTTP Server for Web Portal & REST API
     const server = http.createServer(app);
     server.listen(config.PORT, config.HOST, () => {
       console.log(`[Portal] PORTAL PEMILIK BOT ASTEN! running at: http://localhost:${config.PORT}`);
@@ -39,6 +43,7 @@ async function bootstrap() {
     const shutdown = async (signal) => {
       console.log(`\n[Shutdown] Received ${signal}. Shutting down ASTEN! gracefully...`);
       expirationWorker.stop();
+      watchdogService.stop();
 
       for (const [botId, info] of botManager.activeInstances.entries()) {
         try {

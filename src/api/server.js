@@ -15,6 +15,7 @@ const productRoutes = require('./routes/productRoutes');
 const transactionRoutes = require('./routes/transactionRoutes');
 const rnkRoutes = require('./routes/rnkRoutes');
 const logsRoutes = require('./routes/logsRoutes');
+const realtimeService = require('../services/realtimeService');
 
 const app = express();
 
@@ -26,6 +27,11 @@ app.use(express.urlencoded({ extended: true }));
 // Serve static frontend for PORTAL PEMILIK BOT ASTEN!
 app.use(express.static(path.join(__dirname, '../public')));
 app.use('/uploads', express.static(config.UPLOAD_DIR));
+
+// Real-Time Server-Sent Events (SSE) Stream
+app.get('/api/events', (req, res) => {
+  realtimeService.handleConnection(req, res);
+});
 
 // API Routes
 app.use('/api/auth', authRoutes);

@@ -10,6 +10,8 @@ const OwnerModel = require('../../models/OwnerModel');
 const AdminModel = require('../../models/AdminModel');
 const RnkModel = require('../../models/RnkModel');
 const LicenseModel = require('../../models/LicenseModel');
+const realtimeService = require('../../services/realtimeService');
+const BotModel = require('../../models/BotModel');
 
 // In-memory set of owners awaiting BotFather token
 const awaitingBotTokenOwners = new Set(); // Set<telegramUserId>
@@ -113,6 +115,12 @@ const StartHandler = {
 
     awaitingBotTokenOwners.add(userId);
 
+    // Broadcast to real-time website dashboard!
+    realtimeService.broadcast('owner_activated', {
+      owner: result.owner,
+      timestamp: Date.now()
+    });
+
     // Exact response specified in Section 20 of prompt!
     let successMsg = `🎉 <b>Selamat! Aktivasi Owner berhasil.</b>\n\n`;
     successMsg += `Nama Owner: <b>${result.owner.name}</b>\n`;
@@ -168,6 +176,13 @@ const StartHandler = {
       awaitingBotTokenOwners.delete(userId);
 
       const newBot = regResult.bot;
+
+      // Broadcast instant push event to website dashboard & "Manajemen Bot"!
+      realtimeService.broadcast('bot_registered', {
+        bot: newBot,
+        ownerName: owner.name,
+        timestamp: Date.now()
+      });
       let botSuccessMsg = `🎉 <b>PENDAFTARAN BOT BERHASIL & LANGSUNG AKTIF!</b>\n`;
       botSuccessMsg += `━━━━━━━━━━━━━━━━━━━━━\n`;
       botSuccessMsg += `🤖 Nama Bot: <b>${newBot.bot_name}</b>\n`;
@@ -262,13 +277,105 @@ const StartHandler = {
 
     if (owner) {
       helpMsg += `<b>Perintah Khusus Owner:</b>\n`;
-      helpMsg += `• /settings (Private Chat) - Panel lengkap Owner (Kelola Admin, Produk, Pembayaran, RNK, Grup, Laporan)\n`;
-      helpMsg += `• <i>Fitur pendaftaran bot dan manajemen admin tersedia di Private Chat</i>\n\n`;
+      helpMsg += `• /mybots - Lihat & kontrol bot toko milik Anda\n`;
+      helpMsg += `• /addbot - Tambah bot baru via Token BotFather\n`;
+      helpMsg += `• /status - Cek status sistem & server 24 jam\n`;
+      helpMsg += `• /settings (Private Chat) - Panel lengkap Owner\n\n`;
     }
 
     helpMsg += `<i>Butuh bantuan lebih lanjut? Hubungi Owner toko atau administrator grup.</i>`;
 
     return ctx.reply(helpMsg, { parse_mode: 'HTML' });
+  },
+
+  handleMyBots: async (ctx) => {
+    const userId = String(ctx.from.id);
+    const owner = OwnerModel.findByTelegramUserId(userId);
+    if (!owner) {
+      return ctx.reply('⚠️ Anda belum terdaftar sebagai Owner. Silakan aktifkan kode akses terlebih dahulu.');
+    }
+
+    const myBots = BotModel.findByOwnerId(owner.id).filter(b => !b.is_official);
+    if (myBots.length === 0) {
+      return ctx.reply(
+        `🤖 <b>Daftar Bot Anda (0 Bot)</b>\n\n` +
+        `Anda belum mendaftarkan bot toko.\n` +
+        `Ketik /addbot atau langsung kirimkan API Token dari @BotFather di chat ini untuk menambahkan bot baru!`,
+        { parse_mode: 'HTML' }
+      );
+    }
+
+    let msg = `🤖 <b>DAFTAR BOT TOKO ANDA (${myBots.length}/${owner.max_bots} Bot)</b>\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+    const buttons = [];
+    myBots.forEach((b, i) => {
+      let icon = '🟢';
+      if (b.operational_status === 'OFFLINE' || b.status === 'INACTIVE') icon = '🔴';
+      else if (b.operational_status === 'ERROR') icon = '🟠';
+      else if (b.operational_status === 'RESTARTING') icon = '🔵';
+
+      msg += `${i + 1}. ${icon} <b>${b.bot_name}</b> (@${b.bot_username})\n`;
+      msg += `   ID: <code>${b.bot_id}</code> | Status: <b>${b.operational_status || 'ONLINE'}</b>\n\n`;
+
+      buttons.push([
+        Markup.button.callback(`🔄 Restart @${b.bot_username}`, `restart_owner_bot_${b.bot_id}`),
+        Markup.button.callback(b.status === 'ACTIVE' ? '⏸️ Stop' : '▶️ Start', `toggle_owner_bot_${b.bot_id}`)
+      ]);
+    });
+
+    if (myBots.length < owner.max_bots) {
+      buttons.push([Markup.button.callback('➕ Tambah Bot Baru', 'owner_add_bot_prompt')]);
+    }
+
+    return ctx.reply(msg, {
+      parse_mode: 'HTML',
+      ...Markup.inlineKeyboard(buttons)
+    });
+  },
+
+  handleAddBot: async (ctx) => {
+    const userId = String(ctx.from.id);
+    const owner = OwnerModel.findByTelegramUserId(userId);
+    if (!owner) {
+      return ctx.reply('⚠️ Anda belum terdaftar sebagai Owner. Masukkan Kode Akses ASTEN! Anda terlebih dahulu.');
+    }
+
+    const currentBotsCount = BotModel.countTenantBotsByOwnerId(owner.id);
+    if (currentBotsCount >= owner.max_bots) {
+      return ctx.reply(`⚠️ <b>Kuota Bot Penuh!</b>\nAnda sudah memiliki ${currentBotsCount} dari maksimal ${owner.max_bots} bot.\nHubungi administrator untuk upgrade kuota lisensi Anda.`, { parse_mode: 'HTML' });
+    }
+
+    awaitingBotTokenOwners.add(userId);
+
+    let msg = `🤖 <b>PENAMBAHAN BOT TOKO BARU</b>\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    msg += `1. Buka <b>@BotFather</b> di Telegram.\n`;
+    msg += `2. Ketik perintah <code>/newbot</code> dan ikuti instruksi hingga selesai.\n`;
+    msg += `3. Salin <b>HTTP API Token</b> yang diberikan @BotFather.\n`;
+    msg += `4. Tempelkan (paste) token tersebut langsung ke chat ini.\n\n`;
+    msg += `<i>Sistem akan otomatis memvalidasi, menyimpan secara terenkripsi, dan langsung menjalankan bot Anda 24 jam!</i>`;
+
+    return ctx.reply(msg, { parse_mode: 'HTML' });
+  },
+
+  handleSystemStatus: async (ctx) => {
+    const stats = BotModel.getStats();
+    const uptimeSec = Math.floor(process.uptime());
+    const hours = Math.floor(uptimeSec / 3600);
+    const mins = Math.floor((uptimeSec % 3600) / 60);
+
+    let msg = `⚡ <b>STATUS SISTEM OFFICIAL ASTEN BOT</b>\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `👑 Master Bot: <b>@Astenobot</b> (🟢 ONLINE 24 JAM)\n`;
+    msg += `📊 Bot Toko Aktif: <b>${stats.active}</b> / ${stats.total} terdaftar\n`;
+    msg += `⏱️ Uptime Server: <b>${hours} jam ${mins} menit</b>\n`;
+    msg += `💾 Database: <b>SQLite WAL Native (Synchronous)</b>\n`;
+    msg += `🛡️ Auto-Recovery: <b>Aktif (Self-Healing Watchdog)</b>\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━\n`;
+    msg += `<i>Seluruh bot toko berjalan otomatis dan independen di latar belakang.</i>`;
+
+    return ctx.reply(msg, { parse_mode: 'HTML' });
   },
 
   handleMenu: async (ctx) => {

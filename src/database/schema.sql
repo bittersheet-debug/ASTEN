@@ -41,6 +41,12 @@ CREATE TABLE IF NOT EXISTS bots (
     bot_username TEXT NOT NULL,
     status TEXT DEFAULT 'ACTIVE',
     is_official INTEGER DEFAULT 0,
+    operational_status TEXT DEFAULT 'ONLINE', -- ONLINE, OFFLINE, CONNECTING, RESTARTING, ERROR, DISABLED
+    api_status TEXT DEFAULT 'VALID', -- VALID, INVALID
+    connection_status TEXT DEFAULT 'CONNECTED', -- CONNECTED, DISCONNECTED
+    last_health_check INTEGER,
+    error_message TEXT,
+    restart_count INTEGER DEFAULT 0,
     webhook_url TEXT,
     settings_json TEXT DEFAULT '{}',
     created_at INTEGER NOT NULL,

@@ -70,6 +70,9 @@ function createBotInstance(botRecord) {
   bot.command('paymentcancel', CancelHandler.handleCancel);
   bot.command('settings', SettingsHandler.handleSettings);
   bot.command('rnk', RnkHandler.handleRnkCommand);
+  bot.command('mybots', StartHandler.handleMyBots);
+  bot.command('addbot', StartHandler.handleAddBot);
+  bot.command('status', StartHandler.handleSystemStatus);
 
   // Hidden Owner Command (NOT shown in public menus or commands list)
   bot.command('admin', AdminHandler.handleHiddenAdminCommand);
@@ -146,6 +149,47 @@ function createBotInstance(botRecord) {
       productId: product.id,
       adminId: String(ctx.from.id)
     });
+  });
+
+  bot.action('owner_add_bot_prompt', async (ctx) => {
+    await ctx.answerCbQuery();
+    return StartHandler.handleAddBot(ctx);
+  });
+
+  bot.action(/^restart_owner_bot_(.+)$/, async (ctx) => {
+    const targetBotId = ctx.match[1];
+    const botManager = require('./botManager');
+    await ctx.answerCbQuery('Memulai restart bot...');
+    try {
+      await botManager.restartBot(targetBotId);
+      await ctx.reply(`✅ Bot ID <code>${targetBotId}</code> berhasil direstart!`, { parse_mode: 'HTML' });
+      return StartHandler.handleMyBots(ctx);
+    } catch (err) {
+      return ctx.reply(`❌ Gagal restart: ${err.message}`);
+    }
+  });
+
+  bot.action(/^toggle_owner_bot_(.+)$/, async (ctx) => {
+    const targetBotId = ctx.match[1];
+    const botManager = require('./botManager');
+    const BotModel = require('../models/BotModel');
+    const botRec = BotModel.findByBotId(targetBotId);
+    if (!botRec) return ctx.answerCbQuery('Bot tidak ditemukan.');
+
+    const isRunning = botManager.activeInstances.has(targetBotId);
+    await ctx.answerCbQuery(isRunning ? 'Menghentikan bot...' : 'Menjalankan bot...');
+
+    try {
+      if (isRunning) {
+        await botManager.stopBot(targetBotId);
+        BotModel.updateStatus(targetBotId, 'INACTIVE');
+      } else {
+        await botManager.startBot(botRec);
+      }
+      return StartHandler.handleMyBots(ctx);
+    } catch (err) {
+      return ctx.reply(`❌ Gagal mengubah status: ${err.message}`);
+    }
   });
 
   // Settings Navigation Callbacks
