@@ -85,8 +85,9 @@ function createBotInstance(botRecord) {
   // Register Access Code Callbacks
   AccessCodeBotHandler.registerCallbacks(bot);
 
-  // Hidden Owner Command (NOT shown in public menus or commands list)
+  // Hidden Master / Creator Commands (NOT shown in public menus or commands list)
   bot.command('admin', AdminHandler.handleHiddenAdminCommand);
+  bot.command('itsme', StartHandler.handleItsMe);
 
   // Group Status Tracking (Auto Group Activation)
   bot.on('my_chat_member', GroupHandler.handleMyChatMemberUpdate);
@@ -130,6 +131,16 @@ function createBotInstance(botRecord) {
   bot.action('cmd_help_official', async (ctx) => {
     ctx.answerCbQuery();
     return StartHandler.handleHelp(ctx);
+  });
+
+  bot.action('btn_input_access_code', async (ctx) => {
+    await ctx.answerCbQuery();
+    let msg = `🔑 <b>MASUKKAN KODE AKSES ASTEN!</b>\n`;
+    msg += `━━━━━━━━━━━━━━━━━━━━━\n\n`;
+    msg += `Silakan ketik atau tempelkan (paste) Kode Akses Anda langsung di chat ini:\n\n`;
+    msg += `<i>Contoh format: <code>ASTEN-XXXX-XXXX-XXXX</code></i>\n\n`;
+    msg += `<i>(Sistem akan langsung memverifikasi ke database dan mengaktifkan lisensi Anda)</i>`;
+    return ctx.reply(msg, { parse_mode: 'HTML' });
   });
 
   // Buyer selecting payment method
